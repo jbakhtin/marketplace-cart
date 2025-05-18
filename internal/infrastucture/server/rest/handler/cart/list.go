@@ -2,28 +2,27 @@ package cart
 
 import (
 	"encoding/json"
+	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"net/http"
 )
 
-type InfoRequest struct {
-	OrderID int64
+type ListRequest struct {
 }
 
-type InfoResponse struct {
-	Status string
-	User   int64
-	Items  []Item
+type ListResponse struct {
+	Items []struct {
+		domain.Item
+		name  string
+		price string
+	}
 }
 
 func (o *Handler) Info(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusOK)
-	return
 
-	o.log.Info("test")
-
-	var request InfoRequest
+	var request ListRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -33,11 +32,7 @@ func (o *Handler) Info(w http.ResponseWriter, r *http.Request) {
 	// TODO: add logic
 	// ...
 
-	response := InfoResponse{
-		Status: "test", // TODO: remove constant
-		User:   1,
-		Items:  make([]Item, 0),
-	}
+	response := ListResponse{}
 
 	var buf []byte
 	err = json.Unmarshal(buf, &response)

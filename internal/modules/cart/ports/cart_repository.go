@@ -5,8 +5,9 @@ import (
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 )
 
-type OrderRepository interface {
-	Create(ctx context.Context, order domain.Order) (domain.Order, error)
-	SetStatus(ctx context.Context, ID int, status string) (domain.Order, error)
-	GetByID(ctx context.Context, ID int) (domain.Order, error)
+type CartRepository interface {
+	AddItem(ctx context.Context, userID domain.UserID, sku domain.SKU, count domain.Count) error
+	GetCartByUserID(ctx context.Context, userID domain.UserID) (domain.Cart, error)
+	DeleteItemBySKU(ctx context.Context, userID domain.UserID) error
+	DeleteItemsByUserID(ctx context.Context, userID domain.UserID) error
 }

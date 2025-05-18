@@ -5,16 +5,14 @@ import (
 	"net/http"
 )
 
-type PayRequest struct {
-	OrderID int64
-}
+type CheckoutRequest struct{}
 
-type PayResponse struct{}
+type CheckoutResponse struct{}
 
-func (o *Handler) Pay(w http.ResponseWriter, r *http.Request) {
+func (o *Handler) checkout(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "use_case/json")
 
-	var request PayRequest
+	var request CheckoutRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -24,7 +22,7 @@ func (o *Handler) Pay(w http.ResponseWriter, r *http.Request) {
 	// TODO: add logic
 	// ...
 
-	response := PayResponse{}
+	response := CheckoutResponse{}
 
 	var buf []byte
 	err = json.Unmarshal(buf, &response)

@@ -7,8 +7,8 @@ import (
 )
 
 type AddItemRequest struct {
-	Item  domain.ItemSKU
-	Count domain.ItemCount
+	Item  domain.SKU
+	Count domain.Count
 }
 
 type AddItemResponse struct{}
@@ -16,7 +16,7 @@ type AddItemResponse struct{}
 func (o *Handler) Cancel(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "use_case/json")
 
-	var request CancelRequest
+	var request AddItemRequest
 	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -26,7 +26,7 @@ func (o *Handler) Cancel(w http.ResponseWriter, r *http.Request) {
 	// TODO: add logic
 	// ...
 
-	response := CancelResponse{}
+	response := AddItemResponse{}
 
 	var buf []byte
 	err = json.Unmarshal(buf, &response)

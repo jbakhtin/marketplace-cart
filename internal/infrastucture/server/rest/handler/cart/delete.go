@@ -2,25 +2,21 @@ package cart
 
 import (
 	"encoding/json"
+	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"net/http"
 )
 
-type Item struct {
+type DeleteItemRequest struct {
+	ItemSKU domain.SKU
 }
 
-type CreateOrderRequest struct {
-	UserID uint64
-	Items  []Item
-}
-
-type CreateOrderResponse struct {
-	OrderID int64
+type DeleteItemResponse struct {
 }
 
 func (o *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "use_case/json")
 
-	var createOrderRequest CreateOrderRequest
+	var createOrderRequest DeleteItemRequest
 	err := json.NewDecoder(r.Body).Decode(&createOrderRequest)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -30,9 +26,7 @@ func (o *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	// TODO: add logic
 	// ...
 
-	createOrderResponse := CreateOrderResponse{
-		OrderID: 1, // TODO: remove constant
-	}
+	createOrderResponse := DeleteItemResponse{}
 
 	var buf []byte
 	err = json.Unmarshal(buf, &createOrderResponse)

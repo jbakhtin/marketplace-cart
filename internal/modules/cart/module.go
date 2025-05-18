@@ -1,4 +1,4 @@
-package internal
+package cart
 
 import (
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
@@ -6,39 +6,22 @@ import (
 )
 
 type Module struct {
-	orderUseCase use_case.OrderUseCase
-	stockUseCase use_case.StockUseCase
+	cartUseCase use_case.CartUseCase
 }
 
-func InitModule(
-	logger ports.Logger,
-	orderRepository ports.OrderRepository,
-	stockRepository ports.StockRepository,
-) (Module, error) {
-	orderUseCase, err := use_case.NewOrderUseCase(logger, orderRepository, stockRepository)
+func InitModule(logger ports.Logger, cartRepository ports.CartRepository) (Module, error) {
+	cartUseCase, err := use_case.NewCartUseCase(logger, cartRepository)
 	if err != nil {
 		return Module{}, err
 	}
 
-	logger.Debug("order use case successful initiated")
-
-	stockUseCase, err := use_case.NewStockUseCase(logger, stockRepository)
-	if err != nil {
-		return Module{}, err
-	}
-
-	logger.Debug("stock use case successful initiated")
+	logger.Debug("cart use case successful initiated")
 
 	return Module{
-		orderUseCase: orderUseCase,
-		stockUseCase: stockUseCase,
+		cartUseCase: cartUseCase,
 	}, nil
 }
 
-func (m Module) GetOrderUseCase() use_case.OrderUseCase {
-	return m.orderUseCase
-}
-
-func (m Module) GetStockUseCase() use_case.StockUseCase {
-	return m.stockUseCase
+func (m Module) GetCartUseCase() use_case.CartUseCase {
+	return m.cartUseCase
 }
