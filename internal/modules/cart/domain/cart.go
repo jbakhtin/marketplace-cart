@@ -1,11 +1,24 @@
 package domain
 
-type CartID int64
 type UserID int64
-type CartItem string
+type TotalPrice int64
 
 type Cart struct {
-	ID     CartID
 	userID UserID
-	items  []CartItem
+	items  map[SKU]Item
+}
+
+func (c *Cart) AddItem(sku SKU, count Count) {
+	if item, ok := c.items[sku]; !ok {
+		item.count += count
+	}
+
+	c.items[sku] = Item{
+		sku:   sku,
+		count: count,
+	}
+}
+
+func (c *Cart) DeleteItem(sku SKU) {
+	delete(c.items, sku)
 }

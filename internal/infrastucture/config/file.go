@@ -3,9 +3,9 @@ package config
 import "github.com/caarlos0/env/v6"
 
 type Config struct {
-	Server struct {
-		HTTP struct {
-			Address string `env:"SERVER_HTTP_ADDRESS" envDefault:":8080"`
+	WebServer struct {
+		RESTAPI struct {
+			Address string `env:"WEBSERVER_RESTAPI_ADDRESS" envDefault:":8080"`
 		}
 	}
 	Logger struct {
@@ -23,5 +23,5 @@ func NewConfig() (Config, error) {
 }
 
 func (c *Config) GetServerHTTPAddress() string {
-	return c.Server.HTTP.Address
+	return c.WebServer.RESTAPI.Address
 }

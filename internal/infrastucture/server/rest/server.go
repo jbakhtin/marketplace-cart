@@ -3,9 +3,9 @@ package rest
 import (
 	"context"
 	"fmt"
-	router "github.com/jbakhtin/marketplace-loms/internal/infrastucture/server/rest/router/chi"
-	"github.com/jbakhtin/marketplace-loms/internal/modules/loms"
-	"github.com/jbakhtin/marketplace-loms/internal/modules/loms/ports"
+	router "github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/router/chi"
+	"github.com/jbakhtin/marketplace-cart/internal/modules/cart"
+	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 	"net/http"
 )
 
@@ -21,9 +21,9 @@ type Config interface {
 func NewWebServer(
 	cfg Config,
 	logger ports.Logger,
-	lomsModule loms.Module,
+	cartModule cart.Module,
 ) (Server, error) {
-	handler, err := router.NewRouter(&cfg, logger, lomsModule.GetOrderUseCase(), lomsModule.GetStockUseCase())
+	handler, err := router.NewRouter(&cfg, logger, cartModule.GetCartUseCase())
 	if err != nil {
 		return Server{}, err
 	}

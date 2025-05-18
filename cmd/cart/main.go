@@ -36,10 +36,9 @@ func init() {
 	starterBuilder := starter.New()
 	closerBuilder := closer.New()
 
-	orderRepository, err := postgres.NewOrderStorage()
-	stockRepository, err := postgres.NewStockStorage()
+	cartStorage, err := postgres.NewCartStorage()
 
-	lomsModule, err := cart.InitModule(logger, orderRepository, stockRepository)
+	lomsModule, err := cart.InitModule(logger, &cartStorage)
 
 	restServer, err = rest.NewWebServer(&cfg, logger, lomsModule)
 	if err != nil {

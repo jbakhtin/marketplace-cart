@@ -1,9 +1,11 @@
 package domain
 
-type OrderSKU int32
-type OrderCount uint16
+type SKU int32
+type Count uint16
+type Name uint16
+type Price uint16
 
-type OrderItem struct {
-	SKU   OrderSKU
-	count OrderCount
+type Item struct {
+	sku   SKU
+	count Count
 }

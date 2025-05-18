@@ -6,21 +6,37 @@ import (
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 )
 
-type OrderUseCase struct {
+type CartUseCase struct {
 	logger          ports.Logger
-	orderRepository ports.OrderRepository
+	orderRepository ports.CartRepository
 }
 
-func NewOrderUseCase(
+func NewCartUseCase(
 	logger ports.Logger,
-	orderRepository ports.OrderRepository,
-) (OrderUseCase, error) {
-	return OrderUseCase{
+	orderRepository ports.CartRepository,
+) (CartUseCase, error) {
+	return CartUseCase{
 		logger:          logger,
 		orderRepository: orderRepository,
 	}, nil
 }
 
-func (o *OrderUseCase) AddItem(ctx context.Context, ID domain.OrderID) error {
+func (o *CartUseCase) AddItem(ctx context.Context, item domain.Item) error {
+	return nil
+}
+
+func (o *CartUseCase) DeleteItem(ctx context.Context, item domain.SKU) error {
+	return nil
+}
+
+func (o *CartUseCase) List(ctx context.Context) (domain.Cart, error) {
+	return domain.Cart{}, nil
+}
+
+func (o *CartUseCase) Clear(ctx context.Context) error {
+	return nil
+}
+
+func (o *CartUseCase) Checkout(ctx context.Context) error {
 	return nil
 }
