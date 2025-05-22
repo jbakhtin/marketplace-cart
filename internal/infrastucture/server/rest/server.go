@@ -40,6 +40,7 @@ func NewWebServer(
 func (s *Server) Start(ctx context.Context) (err error) {
 	go func() {
 		err = s.ListenAndServe()
+		s.logger.Info(err.Error())
 	}()
 
 	s.logger.Info(fmt.Sprintf("webserver available on: %v", s.Server.Addr))

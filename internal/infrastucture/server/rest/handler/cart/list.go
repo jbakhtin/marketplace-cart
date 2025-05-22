@@ -2,51 +2,41 @@ package cart
 
 import (
 	"encoding/json"
-	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
+	"github.com/go-playground/validator/v10"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
 	"net/http"
 )
 
 type ListRequest struct {
+	Test string `json:"test" validate:"required"`
 }
 
 type ListResponse struct {
-	Items []struct {
-		domain.Item
-		name  string
-		price string
-	}
+	Items []Item `json:"items" validate:"required"`
 }
 
-func (o *Handler) Info(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+type Item struct {
+	Name  string `json:"name,omitempty" validate:"required"`
+	Price string `json:"price,omitempty" validate:"required"`
+}
 
-	w.WriteHeader(http.StatusOK)
-
+func (o *Handler) List(w http.ResponseWriter, r *http.Request) {
 	var request ListRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
+	_ = json.NewDecoder(r.Body).Decode(&request)
+
+	validate := validator.New()
+	err := validate.Struct(request)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		response.WriteStandardResponse(w, r, http.StatusBadRequest, nil, err)
 		return
 	}
 
 	// TODO: add logic
 	// ...
 
-	response := ListResponse{}
-
-	var buf []byte
-	err = json.Unmarshal(buf, &response)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+	listResponse := ListResponse{
+		Items: make([]Item, 0),
 	}
 
-	_, err = w.Write(buf)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	return
+	response.WriteStandardResponse(w, r, http.StatusOK, listResponse, nil)
 }

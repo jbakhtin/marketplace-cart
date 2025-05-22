@@ -2,41 +2,26 @@ package cart
 
 import (
 	"encoding/json"
+	"github.com/go-playground/validator/v10"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
 	"net/http"
 )
 
 type ClearRequest struct{}
 
-type ClearResponse struct{}
-
-func (o *Handler) Pay(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "use_case/json")
-
+func (o *Handler) Clear(w http.ResponseWriter, r *http.Request) {
 	var request ClearRequest
-	err := json.NewDecoder(r.Body).Decode(&request)
+	_ = json.NewDecoder(r.Body).Decode(&request)
+
+	validate := validator.New()
+	err := validate.Struct(request)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		response.WriteStandardResponse(w, r, http.StatusBadRequest, nil, err)
 		return
 	}
 
 	// TODO: add logic
 	// ...
 
-	response := ClearResponse{}
-
-	var buf []byte
-	err = json.Unmarshal(buf, &response)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	_, err = w.Write(buf)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	return
+	response.WriteStandardResponse(w, r, http.StatusOK, nil, nil)
 }
