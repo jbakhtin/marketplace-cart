@@ -28,4 +28,4 @@ services:
       - DATABASE_DSN=postgres://marketplace_cart_login:marketplace_cart_password@host.docker.internal:5432/marketplace_cart
       - DATABASE_DRIVER=pgx
     ports:
-      - 8080:8000
+      - 8000:8000

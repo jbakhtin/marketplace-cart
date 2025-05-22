@@ -27,19 +27,14 @@ func NewRouter(
 	router.Use(middleware.RequestID)
 	router.Use(middleware.URLFormat)
 
-	router.Route("/orders", func(r chi.Router) {
-		r.Post("/create", cartHandler.Create)
+	router.Route("/cart", func(r chi.Router) {
+		r.Get("/list", cartHandler.List)
+		r.Post("/checkout", cartHandler.Checkout)
+		r.Post("/clear", cartHandler.Clear)
 
-		r.Route("/{OrderID}", func(r chi.Router) {
-			r.Get("/info", cartHandler.Info)
-			r.Put("/pay", cartHandler.Pay)
-			r.Put("/cancel", cartHandler.Cancel)
-		})
-	})
-
-	router.Route("/stocks", func(r chi.Router) {
-		r.Route("/{StockID}", func(r chi.Router) {
-			r.Get("/info", cartHandler.Info)
+		r.Route("/items}", func(r chi.Router) {
+			r.Post("/add", cartHandler.AddItem)
+			r.Post("/delete", cartHandler.Delete)
 		})
 	})
 
