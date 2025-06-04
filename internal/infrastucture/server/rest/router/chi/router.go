@@ -4,11 +4,13 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/cart"
+	custommiddleware "github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/middleware"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/use_case"
 )
 
 type Config interface {
+	GetAppKey() string
 }
 
 func NewRouter(
@@ -27,12 +29,16 @@ func NewRouter(
 	router.Use(middleware.RequestID)
 	router.Use(middleware.URLFormat)
 
+	// custom middleware
+	authMiddleware := custommiddleware.NewAuthMiddleware(cfg)
+	router.Use(authMiddleware.Auth)
+
 	router.Route("/cart", func(r chi.Router) {
 		r.Get("/list", cartHandler.List)
 		r.Post("/checkout", cartHandler.Checkout)
 		r.Post("/clear", cartHandler.Clear)
 
-		r.Route("/items}", func(r chi.Router) {
+		r.Route("/items", func(r chi.Router) {
 			r.Post("/add", cartHandler.AddItem)
 			r.Post("/delete", cartHandler.Delete)
 		})
