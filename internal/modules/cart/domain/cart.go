@@ -10,12 +10,12 @@ type Cart struct {
 
 func (c *Cart) AddItem(sku SKU, count Count) {
 	if item, ok := c.items[sku]; !ok {
-		item.count += count
+		item.Count += count
 	}
 
 	c.items[sku] = Item{
-		sku:   sku,
-		count: count,
+		Sku:   sku,
+		Count: count,
 	}
 }
 

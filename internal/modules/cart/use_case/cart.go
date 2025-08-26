@@ -2,27 +2,29 @@ package use_case
 
 import (
 	"context"
+	customContext "github.com/jbakhtin/marketplace-cart/internal/infrastucture/context"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 )
 
 type CartUseCase struct {
-	logger          ports.Logger
-	orderRepository ports.CartRepository
+	logger         ports.Logger
+	cartRepository ports.CartRepository
 }
 
 func NewCartUseCase(
 	logger ports.Logger,
-	orderRepository ports.CartRepository,
+	cartRepository ports.CartRepository,
 ) (CartUseCase, error) {
 	return CartUseCase{
-		logger:          logger,
-		orderRepository: orderRepository,
+		logger:         logger,
+		cartRepository: cartRepository,
 	}, nil
 }
 
 func (o *CartUseCase) AddItem(ctx context.Context, item domain.Item) error {
-	return nil
+	userID := ctx.Value(customContext.UserIDKey)
+	return o.cartRepository.AddItem(ctx, userID.(domain.UserID), item.Sku, item.Count)
 }
 
 func (o *CartUseCase) DeleteItem(ctx context.Context, item domain.SKU) error {

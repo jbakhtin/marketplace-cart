@@ -8,16 +8,16 @@ import (
 )
 
 type ListRequest struct {
-	Test string `json:"test" validate:"required"`
+	Test string `json:"test"`
 }
 
 type ListResponse struct {
-	Items []Item `json:"items" validate:"required"`
+	Items []Item `json:"items"`
 }
 
 type Item struct {
-	Name  string `json:"name,omitempty" validate:"required"`
-	Price string `json:"price,omitempty" validate:"required"`
+	Name  string `json:"name,omitempty"`
+	Price string `json:"price,omitempty"`
 }
 
 func (o *Handler) List(w http.ResponseWriter, r *http.Request) {

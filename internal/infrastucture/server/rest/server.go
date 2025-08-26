@@ -16,6 +16,7 @@ type Server struct {
 
 type Config interface {
 	GetServerHTTPAddress() string
+	GetAppKey() string
 }
 
 func NewWebServer(
@@ -23,7 +24,7 @@ func NewWebServer(
 	logger ports.Logger,
 	cartModule cart.Module,
 ) (Server, error) {
-	handler, err := router.NewRouter(&cfg, logger, cartModule.GetCartUseCase())
+	handler, err := router.NewRouter(cfg, logger, cartModule.GetCartUseCase())
 	if err != nil {
 		return Server{}, err
 	}
