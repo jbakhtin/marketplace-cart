@@ -6,6 +6,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -57,7 +58,12 @@ func (m Middleware) Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "user_id", customClaims.Subject)
+		userID, err := strconv.Atoi(customClaims.Subject)
+		if err != nil {
+			response.WriteStandardResponse(w, r, http.StatusUnauthorized, nil, errors.New("token not valid"))
+			return
+		}
+		ctx := context.WithValue(r.Context(), "user_id", userID)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}

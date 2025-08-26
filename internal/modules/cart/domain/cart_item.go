@@ -6,6 +6,6 @@ type Name uint16
 type Price uint16
 
 type Item struct {
-	sku   SKU
-	count Count
+	Sku   SKU
+	Count Count
 }

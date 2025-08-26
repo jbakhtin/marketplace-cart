@@ -9,8 +9,8 @@ import (
 )
 
 type AddItemRequest struct {
-	Item  domain.SKU
-	Count domain.Count
+	Item  domain.SKU   `json:"item,omitempty" validate:"required"`
+	Count domain.Count `json:"count,omitempty" validate:"required"`
 }
 
 func (o *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
@@ -24,8 +24,16 @@ func (o *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO: add logic
-	// ...
+	item := domain.Item{
+		Sku:   request.Item,
+		Count: request.Count,
+	}
+
+	err = o.useCase.AddItem(r.Context(), item)
+	if err != nil {
+		response.WriteStandardResponse(w, r, http.StatusInternalServerError, nil, err)
+		return
+	}
 
 	response.WriteStandardResponse(w, r, http.StatusCreated, nil, nil)
 }
