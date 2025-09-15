@@ -18,7 +18,7 @@ func NewRouter(
 	logger ports.Logger,
 	cartUseCase use_case.CartUseCase,
 ) (*chi.Mux, error) {
-	cartHandler, err := cart.NewOrderHandler(cfg, logger, cartUseCase)
+	cartHandler, err := cart.NewOrderHandler(logger, cartUseCase)
 	if err != nil {
 		return nil, err
 	}
