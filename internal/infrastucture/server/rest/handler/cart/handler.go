@@ -7,10 +7,10 @@ import (
 
 type Handler struct {
 	log     ports.Logger
-	useCase use_case.CartUseCase
+	useCase use_case.CartUseCaseInterface
 }
 
-func NewOrderHandler(logger ports.Logger, useCase use_case.CartUseCase) (Handler, error) {
+func NewHandler(logger ports.Logger, useCase use_case.CartUseCaseInterface) (Handler, error) {
 	return Handler{
 		log:     logger,
 		useCase: useCase,
