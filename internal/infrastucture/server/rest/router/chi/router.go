@@ -16,9 +16,9 @@ type Config interface {
 func NewRouter(
 	cfg Config,
 	logger ports.Logger,
-	cartUseCase use_case.CartUseCase,
+	cartUseCase use_case.CartUseCaseInterface,
 ) (*chi.Mux, error) {
-	cartHandler, err := cart.NewOrderHandler(cfg, logger, cartUseCase)
+	cartHandler, err := cart.NewHandler(logger, cartUseCase)
 	if err != nil {
 		return nil, err
 	}

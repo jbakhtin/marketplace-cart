@@ -7,6 +7,14 @@ import (
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 )
 
+type CartUseCaseInterface interface {
+	AddItem(ctx context.Context, item domain.Item) error
+	DeleteItem(ctx context.Context, item domain.SKU) error
+	List(ctx context.Context) (domain.Cart, error)
+	Clear(ctx context.Context) error
+	Checkout(ctx context.Context) error
+}
+
 type CartUseCase struct {
 	logger         ports.Logger
 	cartRepository ports.CartRepository

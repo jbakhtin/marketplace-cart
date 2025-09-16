@@ -9,23 +9,27 @@ import (
 )
 
 type AddItemRequest struct {
-	Item  domain.SKU   `json:"item,omitempty" validate:"required"`
-	Count domain.Count `json:"count,omitempty" validate:"required"`
+	Sku   domain.SKU   `json:"sku,omitempty" validate:"required,numeric,min=0"`
+	Count domain.Count `json:"count,omitempty" validate:"required,numeric,min=1"`
 }
 
 func (o *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 	var request AddItemRequest
-	_ = json.NewDecoder(r.Body).Decode(&request)
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		response.WriteStandardResponse(w, r, http.StatusBadRequest, nil, err)
+		return
+	}
 
 	validate := validator.New()
-	err := validate.Struct(request)
+	err = validate.Struct(request)
 	if err != nil {
 		response.WriteStandardResponse(w, r, http.StatusBadRequest, nil, err)
 		return
 	}
 
 	item := domain.Item{
-		Sku:   request.Item,
+		Sku:   request.Sku,
 		Count: request.Count,
 	}
 

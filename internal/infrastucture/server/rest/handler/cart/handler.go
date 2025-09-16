@@ -5,18 +5,13 @@ import (
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/use_case"
 )
 
-type Config interface {
-}
-
 type Handler struct {
-	cfg     Config
 	log     ports.Logger
-	useCase use_case.CartUseCase
+	useCase use_case.CartUseCaseInterface
 }
 
-func NewOrderHandler(cfg Config, logger ports.Logger, useCase use_case.CartUseCase) (Handler, error) {
+func NewHandler(logger ports.Logger, useCase use_case.CartUseCaseInterface) (Handler, error) {
 	return Handler{
-		cfg:     cfg,
 		log:     logger,
 		useCase: useCase,
 	}, nil
