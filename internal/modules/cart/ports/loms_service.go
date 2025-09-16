@@ -2,12 +2,14 @@ package ports
 
 import (
 	"context"
+	"errors"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 )
 
-type Product struct {
-}
+var (
+	ErrInternalLomsService = errors.New("loms service error")
+)
 
-type ProductService interface {
-	GetProduct(ctx context.Context, sku domain.SKU)
+type LomsService interface {
+	StockInfo(ctx context.Context, sku domain.SKU) (domain.StockInfo, error)
 }
