@@ -2,7 +2,12 @@ package ports
 
 import (
 	"context"
+	"errors"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
+)
+
+var (
+	ErrInternalRepository = errors.New("cart repository error")
 )
 
 type CartRepository interface {

@@ -2,51 +2,74 @@ package use_case
 
 import (
 	"context"
-	customContext "github.com/jbakhtin/marketplace-cart/internal/infrastucture/context"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/ports"
 )
 
 type CartUseCaseInterface interface {
-	AddItem(ctx context.Context, item domain.Item) error
-	DeleteItem(ctx context.Context, item domain.SKU) error
-	List(ctx context.Context) (domain.Cart, error)
-	Clear(ctx context.Context) error
-	Checkout(ctx context.Context) error
+	AddItem(ctx context.Context, userID domain.UserID, item domain.Item) error
+	DeleteItem(ctx context.Context, userID domain.UserID, item domain.SKU) error
+	List(ctx context.Context, userID domain.UserID) (domain.Cart, error)
+	Clear(ctx context.Context, userID domain.UserID) error
+	Checkout(ctx context.Context, userID domain.UserID) error
 }
 
 type CartUseCase struct {
 	logger         ports.Logger
 	cartRepository ports.CartRepository
+	productService ports.ProductService
+	lomsService    ports.LomsService
 }
 
 func NewCartUseCase(
 	logger ports.Logger,
 	cartRepository ports.CartRepository,
+	productService ports.ProductService,
+	lomsService ports.LomsService,
 ) (CartUseCase, error) {
 	return CartUseCase{
 		logger:         logger,
 		cartRepository: cartRepository,
+		productService: productService,
+		lomsService:    lomsService,
 	}, nil
 }
 
-func (o *CartUseCase) AddItem(ctx context.Context, item domain.Item) error {
-	userID := ctx.Value(customContext.UserIDKey)
-	return o.cartRepository.AddItem(ctx, userID.(domain.UserID), item.Sku, item.Count)
-}
+func (c *CartUseCase) AddItem(ctx context.Context, userID domain.UserID, item domain.Item) error {
+	_, err := c.productService.GetProduct(ctx, item.Sku)
+	if err != nil {
+		return err
+	}
 
-func (o *CartUseCase) DeleteItem(ctx context.Context, item domain.SKU) error {
+	stockInfo, err := c.lomsService.StockInfo(ctx, item.Sku)
+	if err != nil {
+		return err
+	}
+
+	if stockInfo.Count < item.Count {
+		return domain.ErrNotEnoughStock
+	}
+
+	err = c.cartRepository.AddItem(ctx, userID, item.Sku, item.Count)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (o *CartUseCase) List(ctx context.Context) (domain.Cart, error) {
+func (c *CartUseCase) DeleteItem(ctx context.Context, userID domain.UserID, item domain.SKU) error {
+	return nil
+}
+
+func (c *CartUseCase) List(ctx context.Context, userID domain.UserID) (domain.Cart, error) {
 	return domain.Cart{}, nil
 }
 
-func (o *CartUseCase) Clear(ctx context.Context) error {
+func (c *CartUseCase) Clear(ctx context.Context, userID domain.UserID) error {
 	return nil
 }
 
-func (o *CartUseCase) Checkout(ctx context.Context) error {
+func (c *CartUseCase) Checkout(ctx context.Context, userID domain.UserID) error {
 	return nil
 }
