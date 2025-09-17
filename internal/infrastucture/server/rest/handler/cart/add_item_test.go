@@ -1,12 +1,13 @@
 package cart
 
 import (
-	"context"
-	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/mock/cart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/custom_context"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/mock/cart"
 
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/logger/noop"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
@@ -94,7 +95,7 @@ func (s *SuiteAddItem) TestAddItem_CheckValidation() {
 					Once()
 			}
 
-			ctx := context.WithValue(testCase.args.r.Context(), "user_id", testCase.useCase.args.userID)
+			ctx := custom_context.SetUserID(testCase.args.r.Context(), testCase.useCase.args.userID)
 			testCase.args.r = testCase.args.r.WithContext(ctx)
 
 			s.handler.AddItem(testCase.args.w, testCase.args.r)
