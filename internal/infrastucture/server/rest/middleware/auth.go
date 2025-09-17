@@ -1,10 +1,11 @@
 package middleware
 
 import (
-	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/custom_context"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
+	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"net/http"
 	"strconv"
 	"strings"
@@ -58,12 +59,14 @@ func (m Middleware) Auth(next http.Handler) http.Handler {
 			return
 		}
 
-		userID, err := strconv.Atoi(customClaims.Subject)
+		userIDInt, err := strconv.ParseInt(customClaims.Subject, 10, 64)
 		if err != nil {
 			response.WriteStandardResponse(w, r, http.StatusUnauthorized, nil, errors.New("token not valid"))
 			return
 		}
-		ctx := context.WithValue(r.Context(), "user_id", userID)
+
+		userID := domain.UserID(userIDInt)
+		ctx := custom_context.SetUserID(r.Context(), userID)
 
 		next.ServeHTTP(w, r.WithContext(ctx))
 	}

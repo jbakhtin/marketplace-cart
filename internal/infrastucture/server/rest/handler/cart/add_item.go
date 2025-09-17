@@ -2,11 +2,12 @@ package cart
 
 import (
 	"encoding/json"
+	"net/http"
+
 	"github.com/go-playground/validator/v10"
-	context2 "github.com/jbakhtin/marketplace-cart/internal/infrastucture/context"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/custom_context"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
-	"net/http"
 )
 
 type AddItemRequest struct {
@@ -34,9 +35,13 @@ func (o *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 		Count: request.Count,
 	}
 
-	userID := r.Context().Value(context2.UserIDKey) //ToDo: перенести ключ в домен, отвязать от логики контекста
+	userID, ok := custom_context.GetUserID(r.Context())
+	if !ok {
+		response.WriteStandardResponse(w, r, http.StatusUnauthorized, nil, nil)
+		return
+	}
 
-	err = o.useCase.AddItem(r.Context(), userID.(domain.UserID), item)
+	err = o.useCase.AddItem(r.Context(), userID, item)
 	if err != nil {
 		response.WriteStandardResponse(w, r, http.StatusInternalServerError, nil, err)
 		return
