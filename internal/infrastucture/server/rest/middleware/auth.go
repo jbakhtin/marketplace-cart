@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"context"
 	"errors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/custom_context"
@@ -65,7 +64,7 @@ func (m Middleware) Auth(next http.Handler) http.Handler {
 			response.WriteStandardResponse(w, r, http.StatusUnauthorized, nil, errors.New("token not valid"))
 			return
 		}
-		
+
 		userID := domain.UserID(userIDInt)
 		ctx := custom_context.SetUserID(r.Context(), userID)
 
