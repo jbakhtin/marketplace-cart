@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/config"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/logger/zap"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/loms"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/product"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/storage/postgres"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart"
@@ -38,7 +40,7 @@ func init() {
 
 	cartStorage, err := postgres.NewCartStorage()
 
-	lomsModule, err := cart.InitModule(logger, &cartStorage)
+	lomsModule, err := cart.InitModule(logger, &cartStorage, &product.NoOpAdapter{}, &loms.NoOpAdapter{})
 
 	restServer, err = rest.NewWebServer(&cfg, logger, lomsModule)
 	if err != nil {

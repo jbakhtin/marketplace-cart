@@ -3,6 +3,7 @@ package cart
 import (
 	"encoding/json"
 	"github.com/go-playground/validator/v10"
+	context2 "github.com/jbakhtin/marketplace-cart/internal/infrastucture/context"
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/server/rest/handler/response"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"net/http"
@@ -33,7 +34,9 @@ func (o *Handler) AddItem(w http.ResponseWriter, r *http.Request) {
 		Count: request.Count,
 	}
 
-	err = o.useCase.AddItem(r.Context(), item)
+	userID := r.Context().Value(context2.UserIDKey) //ToDo: перенести ключ в домен, отвязать от логики контекста
+
+	err = o.useCase.AddItem(r.Context(), userID.(domain.UserID), item)
 	if err != nil {
 		response.WriteStandardResponse(w, r, http.StatusInternalServerError, nil, err)
 		return
