@@ -24,7 +24,8 @@ func NewWebServer(
 	logger ports.Logger,
 	cartModule cart.Module,
 ) (Server, error) {
-	handler, err := router.NewRouter(cfg, logger, cartModule.GetCartUseCase())
+	module := cartModule.GetCartUseCase()
+	handler, err := router.NewRouter(cfg, logger, &module)
 	if err != nil {
 		return Server{}, err
 	}

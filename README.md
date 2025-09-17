@@ -1,1 +1,1 @@
-# marketplace-cart
+[![codecov](https://codecov.io/gh/jbakhtin/marketplace-cart/graph/badge.svg?token=6lBosJKkoX)](https://codecov.io/gh/jbakhtin/marketplace-cart)

@@ -9,8 +9,13 @@ type Module struct {
 	cartUseCase use_case.CartUseCase
 }
 
-func InitModule(logger ports.Logger, cartRepository ports.CartRepository) (Module, error) {
-	cartUseCase, err := use_case.NewCartUseCase(logger, cartRepository)
+func InitModule(
+	logger ports.Logger,
+	cartRepository ports.CartRepository,
+	productService ports.ProductService,
+	lomsService ports.LomsService,
+) (Module, error) {
+	cartUseCase, err := use_case.NewCartUseCase(logger, cartRepository, productService, lomsService)
 	if err != nil {
 		return Module{}, err
 	}

@@ -1,13 +1,14 @@
 package cart
 
 import (
+	"context"
+	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/mock/cart"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
 	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/logger/noop"
-	"github.com/jbakhtin/marketplace-cart/internal/infrastucture/mock/cart"
 	"github.com/jbakhtin/marketplace-cart/internal/modules/cart/domain"
 	"github.com/stretchr/testify/mock"
 
@@ -17,11 +18,11 @@ import (
 type SuiteAddItem struct {
 	suite.Suite
 	handler     Handler
-	mockUseCase *cart.MockCartUseCase
+	mockUseCase *cart.CartUseCaseInterface
 }
 
 func (s *SuiteAddItem) SetupSuite() {
-	s.mockUseCase = new(cart.MockCartUseCase)
+	s.mockUseCase = new(cart.CartUseCaseInterface)
 
 	s.handler, _ = NewHandler(noop.Logger{}, s.mockUseCase)
 }
@@ -88,10 +89,13 @@ func (s *SuiteAddItem) TestAddItem_CheckValidation() {
 		s.T().Run(testCase.name, func(t *testing.T) {
 			if testCase.useCase.needCall {
 				s.mockUseCase.
-					On(testCase.useCase.function, mock.Anything, testCase.useCase.args.item).
+					On(testCase.useCase.function, mock.Anything, testCase.useCase.args.userID, testCase.useCase.args.item).
 					Return(testCase.useCase.hits.err).
 					Once()
 			}
+
+			ctx := context.WithValue(testCase.args.r.Context(), "user_id", testCase.useCase.args.userID)
+			testCase.args.r = testCase.args.r.WithContext(ctx)
 
 			s.handler.AddItem(testCase.args.w, testCase.args.r)
 			s.Equal(testCase.expectedStatus, testCase.args.w.(*httptest.ResponseRecorder).Code)
